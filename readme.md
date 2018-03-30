@@ -1,6 +1,6 @@
 ## Asic control
 
-this project can is example to manage bulk pool for antminer
+this project is example to manage bulk pool for antminer
 
 
 Donate :
