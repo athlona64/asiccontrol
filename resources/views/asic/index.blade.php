@@ -76,6 +76,8 @@ tr:nth-child(even) {
     <option value="cyphermine" selected>cyphermine</option>
     <option value="pbpminer">pbpminer</option>
 </select>
+pool : <input type="text" name="pool" id="pool" placeholder="">
+password : <input type="text" name="password" id="password" placeholder="">
 IP เครื่อง : <input type="text" name="ip" id="ip" placeholder="เช่น 192.168.7.10">
 เลขเครื่อง : <input type="text" name="number" id="number" placeholder="เช่น 30">
 <button onclick="changePool();">เปลี่ยน Pool</button>
@@ -228,12 +230,12 @@ IP เครื่อง : <input type="text" name="ip" id="ip" placeholder="เ
 
  function changePool()
  {
-    var _ant_pool1url = "stratum+tcp://us2.litecoinpool.org:3333";
-    var _ant_pool2url = "stratum+tcp://us2.litecoinpool.org:3333";
-    var _ant_pool3url = "stratum+tcp://us2.litecoinpool.org:3333";
-    var _ant_pool1pw = "1";
-    var _ant_pool2pw = "1";
-    var _ant_pool3pw = "1";
+    var _ant_pool1url = $('#pool').val();
+    var _ant_pool2url = $('#pool').val();
+    var _ant_pool3url = $('#pool').val();
+    var _ant_pool1pw = $('#password').val();
+    var _ant_pool2pw = $('#password').val();
+    var _ant_pool3pw = $('#password').val();
     var _ant_pool1user = $('#username').val()+'.'+$('#number').val();
     var _ant_pool2user = $('#username').val()+'.'+$('#number').val();
     var _ant_pool3user = $('#username').val()+'.'+$('#number').val();

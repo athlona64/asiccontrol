@@ -26,3 +26,4 @@ Route::get('/asic', 'IndexController@asic');
 Route::get('/changeMulti', 'IndexController@changeMulti');
 Route::get('/asicNetwork', 'IndexController@asicNetwork');
 Route::get('/scanIP', 'IndexController@scanIP');
+Route::get('/scanIPGetTemp', 'IndexController@scanIPGetTemp');

@@ -87,7 +87,7 @@ class IndexController extends Controller
 		$username = 'root';
 		$password = 'root';
 		//status
-		for($a=0;$a<8;$a++)
+		for($a=1;$a<2;$a++)
 		{
 		// $a=7;
 		for($i=0;$i<254;$i++)
@@ -165,6 +165,120 @@ class IndexController extends Controller
 		}
 	}
 
+	public function scanIPGetTemp()
+	{
+
+		$username = 'root';
+		$password = 'root';
+	
+		//status
+		for($a=7;$a<8;$a++)
+		{
+		for($i=0;$i<254;$i++)
+		{
+			// $loginUrl = 'http://192.168.'.$a.'.'.$i.'/cgi-bin/get_miner_status.cgi';
+			$loginUrl = 'http://192.168.2.252/cgi-bin/get_miner_status.cgi';
+			$temp_string = '';
+			$sendLine = 0;
+			$loopArray = 0;
+			error_reporting(E_ALL); 
+			ini_set( 'display_errors','1');
+
+			$url = $loginUrl;
+			$post_data = array(
+			        'fieldname1' => 'value1',
+			        'fieldname2' => 'value2'
+			  );
+
+			$options = array(
+			        CURLOPT_URL            => $url,
+			        CURLOPT_HEADER         => false,    
+			        CURLOPT_VERBOSE        => true,
+			        CURLOPT_RETURNTRANSFER => true,
+			        CURLOPT_FOLLOWLOCATION => true,
+			        CURLOPT_SSL_VERIFYPEER => false,    // for https
+			        CURLOPT_USERPWD        => $username . ":" . $password,
+			        CURLOPT_HTTPAUTH       => CURLAUTH_DIGEST,
+			        CURLOPT_POST           => true,
+			        CURLOPT_CONNECTTIMEOUT => 3,
+			        CURLOPT_TIMEOUT => 5,
+			        CURLOPT_POSTFIELDS     => http_build_query($post_data) 
+			);
+
+			$ch = curl_init();
+
+			curl_setopt_array( $ch, $options );
+
+			try {
+			  $raw_response  = curl_exec( $ch );
+			  $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		
+			} catch(Exception $ex) {
+			    if ($ch != null) curl_close($ch);
+			    throw new Exception($ex);
+			}
+
+			if ($ch != null) curl_close($ch);
+
+			$response = json_decode($raw_response);
+			if(isset($response))
+			{
+
+				//get freq it text
+				$freq = $response->devs[0]->freq;
+				//explode with , array
+				$temp = explode(',', $freq);
+
+				//temp hashboard
+				 $plus = 9;
+				 for($z=0;$z<4;$z++)
+				 {
+				 	$temp_[$z] = $temp[$z+$plus];
+				 }
+
+				 //explode name and temp
+				 for($j=0;$j<4;$j++)
+				 {
+				 	$temp_name[$j] = explode('=', $temp_[$j]);
+				 }
+
+				 //loop for check more hashboard temp than 79
+				 for($i=0;$i<4;$i++)
+				 {
+				 	for($a=1;$a<5;$a++)
+				 	{
+					 		if($temp_name[$i][0] == 'temp2_'.$a)
+					 		{
+					 			if($temp_name[$i][1] > 60)
+					 			{
+					 				$temp_string .= $temp_[$i];
+					 				$sendLine = 1;
+					 			}
+					 			break;
+					 		}
+				 	}
+				 }
+
+				$data[$loopArray] = array(
+					'hostname'=>$response->pools[0]->user,
+					'temp'=>$temp_string,
+					'sendLine'=>$sendLine
+					);
+				$loopArray++;
+				// print_r($data);
+			}
+			}
+		}
+
+		foreach($data as $value)
+		{
+			//sendLine if status = 1
+			if($value->sendLine == 1)
+			{
+				echo $hostname."<br>".$temp;
+			}
+		}
+	}
 	public function changePool(Request $request)
 	{
 		$username = 'root';
